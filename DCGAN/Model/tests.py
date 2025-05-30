@@ -1,0 +1,4 @@
+INITIAL_FMAPS_SIZE = 1024
+FMAPS_SIZES = [INITIAL_FMAPS_SIZE/2**i for i in range(4)]
+
+print(FMAPS_SIZES)
