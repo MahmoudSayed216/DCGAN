@@ -154,6 +154,9 @@ def train(train_loader, val_loader, output_path):
             
             G_running_loss += G_loss.item()
             D_running_loss += D_loss.item()
+            if j%60 == 0:
+                LOG("ITERATION G LOSS: ",G_loss.item())
+                LOG("ITERATION D LOSS: ",D_loss.item())
 
 
         G_avg_train_loss = G_running_loss / len(train_loader)
