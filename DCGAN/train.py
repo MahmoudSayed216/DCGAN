@@ -41,20 +41,21 @@ def get_loaders(data_dir, output_base_dir):
             # Important parts, above can be ignored
             T.Resize(int(OUTPUT_SIZE * 1.1)),
             T.CenterCrop(OUTPUT_SIZE),
-            T.ToTensor()        
+            T.ToTensor(),
+            T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
         ])    
     
     transforms = T.Compose([
         T.Resize(int(OUTPUT_SIZE * 1.1)),
         T.CenterCrop(OUTPUT_SIZE),
         T.Resize((64, 64)),
-        T.ToTensor()        
+        T.ToTensor(),
+        T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
     ])
     
 
     train_DS = FacesDataset(train_csv, transforms=transforms)
     val_DS = FacesDataset(val_csv)
-    test_DS = FacesDataset(test_csv)
 
     train_loader = DataLoader(train_DS, batch_size=MINI_BATCH_SIZE, shuffle=True)
     val_loader = DataLoader(val_DS, batch_size=MINI_BATCH_SIZE, shuffle=True)
@@ -171,6 +172,7 @@ def train(train_loader, val_loader, output_path):
         writer.add_scaler("D_AVG_V_LOSS", epoch, D_avg_val_loss)
         
         if D_avg_val_loss > highest_D_loss:
+            highest_D_loss = D_avg_val_loss
             weights_path = os.path.join(output_path, "weights", "best.pth")
             save_checkpoint(weights_path, epoch, G_avg_val_loss, D_avg_val_loss, generator, discriminator, G_optim, D_optim)
         if epoch ==1 or (epoch%10 == 0):
