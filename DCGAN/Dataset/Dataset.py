@@ -48,6 +48,12 @@ class FacesDataset(Dataset):
         self.transforms = transforms
         csv_file = pd.read_csv(csv_path)
         self.images = csv_file['image_path'].to_list()
+        if self.transforms is None:
+            self.transforms = T.Compose([
+                T.Resize((64, 64)),
+                T.ToTensor(),
+                T.Normalize(mean=(0.5, 0.5, 0.5), std=(0.5, 0.5, 0.5))
+            ])
 
     def __len__(self):
         return len(self.images)
@@ -55,11 +61,6 @@ class FacesDataset(Dataset):
     def __getitem__(self, index):
         current_image = self.images[index]
         current_image = Image.open(current_image).convert("RGB")
-        if self.transforms is None:
-            self.transforms = T.Compose([
-                T.Resize((64, 64)),
-                T.ToTensor()        
-            ])
         current_image = self.transforms(current_image)
              
         current_image = current_image/255.0
